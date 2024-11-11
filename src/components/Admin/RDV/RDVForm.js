@@ -1,8 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import axios from 'axios';
 
 const RDVForm = ({ initialData = {}, onSubmit }) => {
-    const [formData, setFormData] = useState(initialData);
+    const [formData, setFormData] = useState({
+        patientId: '',
+        medId: '',
+        dateRDV: '',
+        heureRDV: '',
+        status: 'EN_ATTENTE',
+        ...initialData // Allows formData to be initialized with initialData if provided
+    });
+
+    useEffect(() => {
+        // Fetch data if an appointment ID is available in initialData
+        if (initialData.id) {
+            axios.get(`http://localhost:8090/appointments/${initialData.id}`)
+                .then((response) => setFormData(response.data))
+                .catch((error) => console.error('Error fetching appointment data:', error));
+        }
+    }, [initialData.id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -11,7 +28,7 @@ const RDVForm = ({ initialData = {}, onSubmit }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(formData);
+        onSubmit(formData); // Calls the provided onSubmit handler with form data
     };
 
     return (
@@ -20,7 +37,7 @@ const RDVForm = ({ initialData = {}, onSubmit }) => {
                 <TextField
                     label="Patient ID"
                     name="patientId"
-                    value={formData.patientId || ''}
+                    value={formData.patientId}
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
@@ -29,7 +46,7 @@ const RDVForm = ({ initialData = {}, onSubmit }) => {
                 <TextField
                     label="Doctor ID"
                     name="medId"
-                    value={formData.medId || ''}
+                    value={formData.medId}
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
@@ -39,7 +56,7 @@ const RDVForm = ({ initialData = {}, onSubmit }) => {
                     label="Date"
                     name="dateRDV"
                     type="date"
-                    value={formData.dateRDV || ''}
+                    value={formData.dateRDV}
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
@@ -50,7 +67,7 @@ const RDVForm = ({ initialData = {}, onSubmit }) => {
                     label="Time"
                     name="heureRDV"
                     type="time"
-                    value={formData.heureRDV || ''}
+                    value={formData.heureRDV}
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
@@ -61,7 +78,7 @@ const RDVForm = ({ initialData = {}, onSubmit }) => {
                     <InputLabel>Status</InputLabel>
                     <Select
                         name="status"
-                        value={formData.status || 'EN_ATTENTE'}
+                        value={formData.status}
                         onChange={handleChange}
                     >
                         <MenuItem value="EN_ATTENTE">En Attente</MenuItem>

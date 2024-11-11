@@ -1,4 +1,3 @@
-// src/Pages/PatientList.js
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
@@ -8,7 +7,7 @@ const PatientList = () => {
     const [patients, setPatients] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/patients/retrieve-all-patients')
+        axios.get('http://localhost:8090/patients/retrieve-all-patients')
             .then((response) => setPatients(response.data))
             .catch((error) => console.error('Error fetching patients:', error));
     }, []);

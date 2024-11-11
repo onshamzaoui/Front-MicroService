@@ -8,7 +8,7 @@ const Appointments = () => {
     const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/rdv')
+        axios.get('http://localhost:8090/rdv')
             .then((response) => setAppointments(response.data))
             .catch((error) => console.error('Error fetching appointments:', error));
     }, []);

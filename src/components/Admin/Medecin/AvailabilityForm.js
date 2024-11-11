@@ -1,4 +1,3 @@
-// src/components/Medecin/AvailabilityForm.js
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container } from '@mui/material';
 import { useParams } from 'react-router-dom';
@@ -10,6 +9,24 @@ const AvailabilityForm = () => {
         availableDate: '',
         timeSlots: [{ startTime: '', endTime: '' }],
     });
+
+    // Fetch existing availability data if editing
+    useEffect(() => {
+        const fetchAvailabilityData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8090/availability/${medecinId}`);
+                if (response.data) {
+                    setAvailabilityData(response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching availability:', error);
+            }
+        };
+
+        if (medecinId) {
+            fetchAvailabilityData();
+        }
+    }, [medecinId]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -25,13 +42,29 @@ const AvailabilityForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await axios.post(`http://localhost:8080/v1/availability/${medecinId}`, availabilityData);
-        alert('Availability added!');
+        try {
+            if (medecinId) {
+                await axios.put(`http://localhost:8090/availability/${medecinId}`, availabilityData);
+                alert('Availability updated!');
+            } else {
+                await axios.post(`http://localhost:8090/availability`, availabilityData);
+                alert('Availability added!');
+            }
+        } catch (error) {
+            console.error('Error saving availability:', error);
+        }
+    };
+
+    const handleAddSlot = () => {
+        setAvailabilityData({
+            ...availabilityData,
+            timeSlots: [...availabilityData.timeSlots, { startTime: '', endTime: '' }],
+        });
     };
 
     return (
         <Container maxWidth="sm">
-            <h2>Add Availability</h2>
+            <h2>{medecinId ? 'Edit Availability' : 'Add Availability'}</h2>
             <form onSubmit={handleSubmit}>
                 <TextField
                     label="Available Date"
@@ -68,7 +101,10 @@ const AvailabilityForm = () => {
                         />
                     </div>
                 ))}
-                <Button type="submit" variant="contained" color="primary" fullWidth>
+                <Button onClick={handleAddSlot} variant="outlined" color="secondary" fullWidth style={{ marginTop: '10px' }}>
+                    Add Time Slot
+                </Button>
+                <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '20px' }}>
                     Submit
                 </Button>
             </form>

@@ -1,9 +1,10 @@
-// src/components/Fiche/RecordForm.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Container } from '@mui/material';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 const RecordForm = () => {
+    const { id } = useParams(); // This assumes you're using react-router to get the record ID from the URL
     const [formData, setFormData] = useState({
         patientId: '',
         description: '',
@@ -14,6 +15,22 @@ const RecordForm = () => {
         notes: '',
     });
 
+    // useEffect to fetch existing record data if `id` is present
+    useEffect(() => {
+        if (id) {
+            // Fetch the record data from the API
+            const fetchRecord = async () => {
+                try {
+                    const response = await axios.get(`http://localhost:8090/medicalRecords/${id}`);
+                    setFormData(response.data);
+                } catch (error) {
+                    console.error('Error fetching record:', error);
+                }
+            };
+            fetchRecord();
+        }
+    }, [id]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -21,12 +38,34 @@ const RecordForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Remove or uncomment this line based on your requirements for submission
+        try {
+            if (id) {
+                // If `id` exists, update the existing record
+                const response = await axios.put(`http://localhost:8090/medicalRecords/${id}`, formData);
+                console.log('Record updated:', response.data);
+            } else {
+                // If `id` does not exist, create a new record
+                const response = await axios.post('http://localhost:8090/medicalRecords', formData);
+                console.log('Record created:', response.data);
+            }
+            // Optionally reset the form or show a success message
+            setFormData({
+                patientId: '',
+                description: '',
+                treatmentDescription: '',
+                prescription: '',
+                doctorId: '',
+                date: '',
+                notes: '',
+            });
+        } catch (error) {
+            console.error('Error saving record:', error);
+        }
     };
 
     return (
         <Container maxWidth="sm" style={{ marginTop: '20px' }}>
-            <h2>Add New Medical Record</h2>
+            <h2>{id ? 'Edit Medical Record' : 'Add New Medical Record'}</h2>
             <form onSubmit={handleSubmit}>
                 <TextField
                     label="Patient ID"
@@ -93,7 +132,7 @@ const RecordForm = () => {
                     rows={4}
                 />
                 <Button variant="contained" color="primary" type="submit" fullWidth>
-                    Submit
+                    {id ? 'Update' : 'Submit'}
                 </Button>
             </form>
         </Container>

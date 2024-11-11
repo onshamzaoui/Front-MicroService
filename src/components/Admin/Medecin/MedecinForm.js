@@ -1,7 +1,6 @@
-// src/components/Medecin/MedecinForm.js
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { TextField, Button, Container } from '@mui/material';
+import { TextField, Button, Container, Typography } from '@mui/material';
 import axios from 'axios';
 
 const MedecinForm = () => {
@@ -14,12 +13,14 @@ const MedecinForm = () => {
         licenseNumber: '',
         experienceYears: '',
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (id) {
-            axios.get(`http://localhost:8080/v1/medecins/${id}`)
+            axios.get(`http://localhost:8090/medecins/${id}`)
                 .then((response) => setMedecinData(response.data))
-                .catch((error) => console.error('Error fetching medecin:', error));
+                .catch((error) => setError('Error fetching medecin data.'));
         }
     }, [id]);
 
@@ -30,17 +31,32 @@ const MedecinForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (id) {
-            await axios.put(`http://localhost:8080/v1/medecins/${id}`, medecinData);
-        } else {
-            await axios.post('http://localhost:8080/v1/medecins', medecinData);
+        setIsSubmitting(true);
+        setError(null);
+        try {
+            if (id) {
+                await axios.put(`http://localhost:8090/medecins/${id}`, medecinData);
+            } else {
+                await axios.post('http://localhost:8090/medecins', medecinData);
+            }
+            navigate('/medecins');
+        } catch (error) {
+            setError('Error saving medecin data.');
+        } finally {
+            setIsSubmitting(false);
         }
-        navigate('/medecins');
     };
 
     return (
         <Container maxWidth="sm">
-            <h2>{id ? 'Edit Medecin' : 'Add Medecin'}</h2>
+            <Typography variant="h4" gutterBottom>
+                {id ? 'Edit Medecin' : 'Add Medecin'}
+            </Typography>
+            {error && (
+                <Typography color="error" variant="body2">
+                    {error}
+                </Typography>
+            )}
             <form onSubmit={handleSubmit}>
                 <TextField
                     label="First Name"
@@ -85,8 +101,14 @@ const MedecinForm = () => {
                     fullWidth
                     margin="normal"
                 />
-                <Button type="submit" variant="contained" color="primary" fullWidth>
-                    {id ? 'Update' : 'Add'}
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Submitting...' : id ? 'Update' : 'Add'}
                 </Button>
             </form>
         </Container>

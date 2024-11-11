@@ -8,7 +8,7 @@ const MedecinList = () => {
     const [medecins, setMedecins] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/v1/medecins')
+        axios.get('http://localhost:8090/medecins')
             .then((response) => setMedecins(response.data))
             .catch((error) => console.error('Error fetching medecins:', error));
     }, []);

@@ -7,7 +7,7 @@ const PaiementList = () => {
 
   useEffect(() => {
     // Fetch paiements data from backend API
-    axios.get('/api/paiements') // Update this URL to match your backend route
+    axios.get('http://localhost:8090/paiements') 
       .then((response) => setPaiements(response.data))
       .catch((error) => console.error('Error fetching paiements:', error));
   }, []);

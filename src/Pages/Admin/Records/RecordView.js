@@ -6,17 +6,26 @@ import axios from 'axios';
 const RecordView = () => {
     const { id } = useParams();
     const [record, setRecord] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Fetch the record details from the API
-        axios.get(`http://localhost:8080/api/medicalRecords/${id}`)
-            .then((response) => setRecord(response.data))
-            .catch((error) => console.error('Error fetching record details:', error));
+        const fetchRecord = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8090/medicalRecords/${id}`);
+                setRecord(response.data);
+                setLoading(false);
+            } catch (error) {
+                setError('Error fetching record details');
+                setLoading(false);
+            }
+        };
+
+        fetchRecord();
     }, [id]);
 
-    if (!record) {
-        return <div>Loading...</div>;
-    }
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
 
     return (
         <div style={{ padding: '20px' }}>

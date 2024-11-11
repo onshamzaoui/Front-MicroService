@@ -7,7 +7,7 @@ const FactureList = () => {
 
   useEffect(() => {
     // Fetch factures data from backend API
-    axios.get('/api/factures') // Update this URL to match your backend route
+    axios.get('http://localhost:8090/factures') // Update this URL to match your backend route
       .then((response) => setFactures(response.data))
       .catch((error) => console.error('Error fetching factures:', error));
   }, []);

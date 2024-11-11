@@ -1,4 +1,3 @@
-// src/Pages/PatientForm.js
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { TextField, Button, Container } from '@mui/material';
@@ -18,7 +17,7 @@ const PatientForm = () => {
 
     useEffect(() => {
         if (id) {
-            axios.get(`http://localhost:8080/patients/retrieve-patient/${id}`)
+            axios.get(`http://localhost:8090/patients/retrieve-patient/${id}`)
                 .then((response) => setPatient(response.data))
                 .catch((error) => console.error('Error fetching patient:', error));
         }
@@ -32,11 +31,11 @@ const PatientForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (id) {
-            axios.put(`http://localhost:8080/patients/modify-patient/${id}`, patient)
+            axios.put(`http://localhost:8090/patients/modify-patient/${id}`, patient)
                 .then(() => navigate('/patients'))
                 .catch((error) => console.error('Error updating patient:', error));
         } else {
-            axios.post('http://localhost:8080/patients/add-patient', patient)
+            axios.post('http://localhost:8090/patients/add-patient', patient)
                 .then(() => navigate('/patients'))
                 .catch((error) => console.error('Error adding patient:', error));
         }

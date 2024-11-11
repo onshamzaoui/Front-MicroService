@@ -9,7 +9,7 @@ const MedicalRecords = () => {
 
     useEffect(() => {
         // Fetch records from the API
-        axios.get('http://localhost:8080/api/medicalRecords')
+        axios.get('http://localhost:8090/medicalRecords')
             .then((response) => setRecords(response.data))
             .catch((error) => console.error('Error fetching records:', error));
     }, []);
