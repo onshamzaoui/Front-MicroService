@@ -2,6 +2,7 @@ import React from 'react';
 import { Container } from 'react-bootstrap';
 import '../../UserOffice/assets/css/main.css';
 import'../../UserOffice/assets/vendor/bootstrap/css/bootstrap.min.css';
+import hero_bg from "../../UserOffice/assets/img/hero-bg.jpg";
 
 function UserHome() {
     return (
@@ -26,7 +27,7 @@ function UserHome() {
             </header>
 
             <section id="hero" className="hero section light-background">
-                <img src="../../UserOffice/assets/img/hero-bg.jpg" alt="" />
+                <img src={hero_bg} alt="" />
                 <div className="container position-relative">
                     <div className="welcome position-relative">
                         <h2>WELCOME TO MEDILAB</h2>

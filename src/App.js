@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import '../src/UserOffice/assets/vendor/bootstrap-icons/bootstrap-icons.css';
 
 // Admin Navigation Bars
 import NavigationBarFiche from './components/Admin/Fiche/NavigationBarFiche';
@@ -36,8 +37,9 @@ import NavigationBar from './components/Admin/NavigationBar';
 const AdminNavigationWrapper = () => {
   const location = useLocation();
   if (location.pathname === '/admin') {
-    return <NavigationBar />;}
-    else  if (location.pathname.startsWith('/admin/appointments') || location.pathname.startsWith('/admin/add-appointment')) {
+    return <NavigationBar />;
+  }
+  else if (location.pathname.startsWith('/admin/appointments') || location.pathname.startsWith('/admin/add-appointment')) {
     return <NavigationBarRDV />;
   } else if (location.pathname.startsWith('/admin/medecins')) {
     return <NavigationBarMedecin />;
@@ -45,10 +47,10 @@ const AdminNavigationWrapper = () => {
     return <NavigationBarPatient />;
   } else if (location.pathname.startsWith('/admin/facturation')) {
     return <NavigationBarFacturation />;
-  } else if (location.pathname.startsWith('/admin/medical-records')|| location.pathname.startsWith('/admin/add-record'))  {
-    return <NavigationBarFiche/>;
+  } else if (location.pathname.startsWith('/admin/medical-records') || location.pathname.startsWith('/admin/add-record')) {
+    return <NavigationBarFiche />;
   } else {
-    return <NavigationBar/>;
+    return <NavigationBar />;
   }
 };
 
